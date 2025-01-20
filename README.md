@@ -2,6 +2,8 @@
 
 A personalized language-learning app that brings the magic of Duolingo-style lessons to your own curated vocabulary lists and contexts.
 
+![WordPecker App](./docs/assets/createlist-addword.gif)
+
 ## The Idea
 
 Learning a new language can be straightforward, but mastering it is the real challenge. While it's relatively easy to grasp the basics, developing strong communication or reading skills depends on having a solid vocabulary. To build this, you must learn words and phrases at various levels, yet exposure is key. For instance, if you've studied English but don’t live in an English-speaking country, advancing your skills becomes significantly harder. You can read books, watch movies, or browse blogs, but fully immersing yourself in the language is still difficult. Real progress often requires extra effort—studying and revisiting words and phrases encountered in your daily life.
