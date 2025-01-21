@@ -2,7 +2,25 @@
 
 A personalized language-learning app that brings the magic of Duolingo-style lessons to your own curated vocabulary lists and contexts.
 
+### Recent Updates
+_Last Updated: January 21, 2025_
+
+Thank you all for the amazing support! We've gathered a list of prioritized features that we'll be implementing in the next few days:
+
+#### Currently In Development (Next Few Days)
+
+- 🚀 A more user-friendly approach to running the app
+- ✨ LiteLLM integration for multiple LLM support
+- 🛠️ Local database setup
+- 🌍 Customizable language preferences (e.g., learning German through Turkish)
+- 🌐 Live demo version
+- 🔒 JSON validation for LLM responses
+- ⚙️ Customizable exercise types
+
 ![WordPecker App](./docs/assets/createlist-addword.gif)
+
+### Contributing
+We're actively working on structuring the repository to make it easier for everyone to contribute. Help and contributions are greatly appreciated!
 
 ## The Idea
 
