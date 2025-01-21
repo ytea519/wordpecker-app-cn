@@ -1,4 +1,4 @@
-import { openai } from '../config/openai';
+import { llm } from '../config/openai';
 import { Exercise, Question } from '../types';
 
 export const openaiService = {
@@ -7,8 +7,7 @@ export const openaiService = {
       ? `Define the word "${word}" in the context of ${context}.`
       : `Define the word "${word}" clearly and concisely.`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
+    const response = await llm.completion({
       messages: [
         {
           role: "system",
@@ -30,7 +29,7 @@ export const openaiService = {
     const prompt = `Create vocabulary-focused multiple choice exercises for these words. ${context ? `The words appear in the context of "${context}". Use this context to enrich the exercises with relevant examples or scenarios, but ensure questions test the word's general meaning and usage.` : ''}
 
 Words to create exercises for:
-${words.map(w => `- ${w.value}: ${w.meaning}`).join('\n')}
+${words.map(word => `${word.value}: ${word.meaning}`).join('\n')}
 
 Instructions:
 1. Create one multiple choice question for each word
@@ -61,8 +60,7 @@ Remember: Questions should test vocabulary knowledge while using context to prov
 
 Ensure the response is a valid JSON object with all required fields.`;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4",
+    const response = await llm.completion({
       messages: [
         {
           role: "system",
@@ -84,7 +82,7 @@ Ensure the response is a valid JSON object with all required fields.`;
       const parsed = JSON.parse(content);
       return parsed.exercises || [];
     } catch (error) {
-      console.error('Error parsing exercises:', error);
+      console.error('Error parsing exercises response:', error);
       return [];
     }
   },
@@ -111,7 +109,7 @@ Instructions:
 
 Ensure the response is a valid JSON object with all required fields.`;
 
-    const response = await openai.chat.completions.create({
+    const response = await llm.completion({
       model: "gpt-4",
       messages: [
         {
@@ -134,8 +132,8 @@ Ensure the response is a valid JSON object with all required fields.`;
       const parsed = JSON.parse(content);
       return parsed.questions || [];
     } catch (error) {
-      console.error('Error parsing questions:', error);
+      console.error('Error parsing quiz questions response:', error);
       return [];
     }
   }
-}; 
+};
