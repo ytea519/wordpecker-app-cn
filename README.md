@@ -20,6 +20,7 @@ Thank you all for the amazing support! We've gathered a list of prioritized feat
 ![WordPecker App](./docs/assets/createlist-addword.gif)
 
 ### Contributing
+
 We're actively working on structuring the repository to make it easier for everyone to contribute. Help and contributions are greatly appreciated!
 
 ## The Idea
