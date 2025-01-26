@@ -114,6 +114,48 @@ cd frontend
 npm install
 ```
 
+Initialise the database:
+
+On https://supabase.com, go to the SQL Editor for your database, and run the following code:
+
+```
+-- Create table: word_lists
+CREATE TABLE word_lists (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    name TEXT NOT NULL,
+    description TEXT,
+    context TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT name_length CHECK (char_length(name) > 0),
+    FOREIGN KEY (user_id) REFERENCES auth.users(id)
+);
+
+-- Create table: words
+CREATE TABLE words (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    list_id UUID NOT NULL,
+    value TEXT NOT NULL,
+    meaning TEXT,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT word_length CHECK (char_length(value) > 0),
+    FOREIGN KEY (list_id) REFERENCES word_lists(id)
+);
+
+-- Create table: sessions
+CREATE TABLE sessions (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    list_id UUID NOT NULL,
+    type TEXT NOT NULL,
+    score INTEGER,
+    current_exercise_index INTEGER,
+    created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMPTZ,
+    CONSTRAINT valid_type CHECK (type IN ('learn', 'quiz')),
+    FOREIGN KEY (list_id) REFERENCES word_lists(id)
+);
+```
+
 ### Configuration
 
 Create `.env` files:
