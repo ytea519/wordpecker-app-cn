@@ -52,30 +52,31 @@ interface QuizQuestionsResponse {
   completed: boolean;
 }
 
+// need to manually create the tables in supabase...
 export const apiService = {
   // Lists
-  getLists: (): ApiResponse<WordList[]> => api.get('/lists'),
-  getList: (id: string): ApiResponse<WordList> => api.get(`/lists/${id}`),
-  createList: (data: Partial<WordList>): ApiResponse<WordList> => api.post('/lists', data),
-  updateList: (id: string, data: Partial<WordList>): ApiResponse<WordList> => api.put(`/lists/${id}`, data),
+  getLists: (): ApiResponse<WordList[]> => api.get('/api/lists'),
+  getList: (id: string): ApiResponse<WordList> => api.get(`/api/lists/${id}`),
+  createList: (data: Partial<WordList>): ApiResponse<WordList> => api.post('/api/lists', data),
+  updateList: (id: string, data: Partial<WordList>): ApiResponse<WordList> => api.put(`/api/lists/${id}`, data),
   deleteList: async (listId: string): Promise<void> => {
-    await api.delete(`/lists/${listId}`);
+    await api.delete(`/api/lists/${listId}`);
   },
 
   // Words
-  getWords: (listId: string): ApiResponse<Word[]> => api.get(`/lists/${listId}/words`),
-  addWord: (listId: string, word: string): ApiResponse<Word> => api.post(`/lists/${listId}/words`, { word }),
-  deleteWord: (listId: string, wordId: string): ApiResponse<void> => api.delete(`/lists/${listId}/words/${wordId}`),
+  getWords: (listId: string): ApiResponse<Word[]> => api.get(`/api/lists/${listId}/words`),
+  addWord: (listId: string, word: string): ApiResponse<Word> => api.post(`/api/lists/${listId}/words`, { word }),
+  deleteWord: (listId: string, wordId: string): ApiResponse<void> => api.delete(`/api/lists/${listId}/words/${wordId}`),
 
   // Learning
   startLearning: (listId: string): ApiResponse<LearnStartResponse> => 
-    api.post(`/learn/${listId}/start`),
+    api.post(`/api/learn/${listId}/start`),
   getExercises: (listId: string): ApiResponse<LearnExercisesResponse> => 
-    api.post(`/learn/${listId}/more`),
+    api.post(`/api/learn/${listId}/more`),
 
   // Quiz
   startQuiz: (listId: string): ApiResponse<QuizStartResponse> => 
-    api.post(`/quiz/${listId}/start`),
+    api.post(`/api/quiz/${listId}/start`),
   getQuestions: (listId: string): ApiResponse<QuizQuestionsResponse> => 
-    api.post(`/quiz/${listId}/more`)
+    api.post(`/api/quiz/${listId}/more`)
 }; 
