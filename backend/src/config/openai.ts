@@ -5,6 +5,8 @@ if (!environment.openaiApiKey) {
   throw new Error('Missing OpenAI API key. Check OPENAI_API_KEY in .env');
 }
 
+export const DEFAULT_MODEL = 'gpt-3.5-turbo';
+
 // Set OpenAI API key for LiteLLM
 process.env['OPENAI_API_KEY'] = environment.openaiApiKey;
 
@@ -12,7 +14,7 @@ process.env['OPENAI_API_KEY'] = environment.openaiApiKey;
 export const llm = {
   completion: async (params: any) => {
     const response = await completion({
-      model: params.model, // example "gemini/gemini-2.0-flash-exp" check for models https://models.litellm.ai/ 
+      model: params.model || DEFAULT_MODEL, // example "gemini/gemini-2.0-flash-exp" check for models https://models.litellm.ai/
       messages: params.messages,
       temperature: params.temperature,
       max_tokens: params.max_tokens,
