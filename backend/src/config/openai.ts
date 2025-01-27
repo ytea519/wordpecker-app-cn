@@ -14,6 +14,7 @@ process.env['OPENAI_API_KEY'] = environment.openaiApiKey;
 export const llm = {
   completion: async (params: any) => {
     const response = await completion({
+      baseUrl: environment.openaiBaseUrl,
       model: params.model || DEFAULT_MODEL, // example "gemini/gemini-2.0-flash-exp" check for models https://models.litellm.ai/
       messages: params.messages,
       temperature: params.temperature,
