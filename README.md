@@ -163,6 +163,7 @@ Create `.env` files:
 Backend `.env`:
 ```
 PORT=
+OPENAI_BASE_URL=
 OPENAI_API_KEY=
 SUPABASE_URL=
 SUPABASE_SERVICE_KEY=
