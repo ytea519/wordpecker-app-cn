@@ -327,7 +327,7 @@ This script will:
 - Frontend: React.js with TypeScript
 - Backend: Express.js with TypeScript
 - Database: MongoDB with Mongoose
-- AI: OpenAI API (with LiteLLM support)
+- AI: OpenAI API
 - Single User: No authentication required
 
 ## Contributing

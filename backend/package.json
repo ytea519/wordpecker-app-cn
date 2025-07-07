@@ -16,9 +16,9 @@
     "express-rate-limit": "^7.1.5",
     "express-validator": "^7.0.1",
     "helmet": "^7.1.0",
-    "litellm": "^0.12.0",
     "mongoose": "^8.0.0",
-    "openai": "^4.24.1"
+    "openai": "^4.24.1",
+    "zod": "^3.25.75"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

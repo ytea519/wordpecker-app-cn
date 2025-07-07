@@ -4,8 +4,8 @@ declare global {
       PORT: string;
       NODE_ENV: 'development' | 'production' | 'test';
       OPENAI_API_KEY: string;
-      SUPABASE_URL: string;
-      SUPABASE_SERVICE_KEY: string;
+      OPENAI_BASE_URL?: string;
+      MONGODB_URL: string;
     }
   }
 }
