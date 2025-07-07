@@ -1,0 +1,85 @@
+@startuml
+
+!define collection(x) class x << (C,#AAFFAA) >>
+!define primary_key(x) <u>x</u>
+!define index(x) #x#
+
+' Styling
+skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+}
+
+collection(wordlists) {
+    primary_key(_id): ObjectId
+    name: String
+    description: String
+    context: String
+    created_at: Date
+    updated_at: Date
+    --
+    Mongoose Schema
+    ..
+    name: required, minLength: 1
+    description: optional
+    context: optional
+    timestamps: true
+}
+
+collection(words) {
+    primary_key(_id): ObjectId
+    index(list_id): ObjectId
+    value: String
+    meaning: String
+    created_at: Date
+    updated_at: Date
+    --
+    Mongoose Schema
+    ..
+    list_id: ref -> WordList, required
+    value: required, minLength: 1
+    meaning: required
+    timestamps: true
+}
+
+collection(sessions) {
+    primary_key(_id): ObjectId
+    index(list_id): ObjectId
+    type: String
+    score: Number
+    current_exercise_index: Number
+    created_at: Date
+    completed_at: Date
+    --
+    Mongoose Schema
+    ..
+    list_id: ref -> WordList, required
+    type: enum ['learn', 'quiz']
+    score: min: 0
+    current_exercise_index: min: 0
+}
+
+' Relationships
+wordlists "1" -- "*" words : contains
+wordlists "1" -- "*" sessions : tracks
+
+note right of sessions
+  type enum: 'learn' | 'quiz'
+  Both session types use same collection
+end note
+
+note right of wordlists
+  Single user application
+  No authentication or user separation
+  All data accessible to single user
+end note
+
+note top
+  MongoDB Database Schema
+  Using Mongoose ODM for Node.js
+  ObjectId used for all primary keys
+  Automatic timestamps enabled
+end note
+
+@enduml

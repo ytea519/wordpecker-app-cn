@@ -1,0 +1,89 @@
+@startuml
+
+skinparam componentStyle rectangle
+skinparam backgroundColor #F8F9FA
+skinparam shadowing false
+
+package "Docker Compose Environment" {
+    
+    rectangle "Frontend Container" as frontend {
+        component [React App] as react
+        component [Vite Dev Server] as vite
+        note top: Port 5173 (dev), 3000 (prod)
+        note bottom: Volume ./frontend:/app
+    }
+    
+    rectangle "Backend Container" as backend {
+        component [Express Server] as express
+        component [Node.js Runtime] as node
+        component [Mongoose ODM] as mongoose
+        note top: Port 3000
+        note bottom: Volume ./backend:/app
+    }
+    
+    rectangle "MongoDB Container" as mongodb {
+        database [MongoDB Server] as mongo
+        component [WiredTiger Engine] as wiredtiger
+        note top: Port 27017
+        note bottom: Volume mongodb_data:/data/db
+    }
+}
+
+cloud "External Services" {
+    [OpenAI API] as openai
+}
+
+package "Host Machine" {
+    component [Docker Engine] as docker
+    actor [Browser] as browser
+    component [MongoDB Compass] as compass
+}
+
+' Connections
+browser --> frontend : http://localhost:5173
+react --> express : API calls
+express --> mongoose : Database operations
+mongoose --> mongo : MongoDB queries
+express --> openai : AI requests
+
+' Docker dependencies
+backend --> mongodb : depends_on
+frontend --> backend : depends_on
+
+' Host connections
+compass --> mongo : localhost:27017
+docker --> frontend : manages
+docker --> backend : manages
+docker --> mongodb : manages
+
+note right of mongodb
+  Credentials
+  Username: admin
+  Password: password
+  Database: wordpecker
+end note
+
+note right of backend
+  Environment
+  MONGODB_URL
+  OPENAI_API_KEY
+  PORT=3000
+end note
+
+note right of frontend
+  Environment
+  VITE_API_URL=http://localhost:3000
+end note
+
+note bottom
+  Development Setup
+  docker-compose -f docker-compose.dev.yml up --build
+  
+  Production Setup
+  docker-compose up --build
+  
+  MongoDB Only
+  docker-compose -f docker-compose.mongo.yml up -d
+end note
+
+@enduml

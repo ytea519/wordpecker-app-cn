@@ -1,24 +1,22 @@
 import { Request, Response } from 'express';
-import { supabase } from '../config/supabase';
+import { WordList, Word } from '../models';
 import { openaiService } from '../services/openaiService';
+import mongoose from 'mongoose';
 
 export const wordController = {
   async addWord(req: Request, res: Response) {
     try {
       const { listId } = req.params;
       const { word: value } = req.body;
-      const userId = req.user!.id;
 
-      // First verify the list belongs to the user and get context
-      const { data: list, error: listError } = await supabase
-        .from('word_lists')
-        .select('id, context')
-        .eq('id', listId)
-        .eq('user_id', userId)
-        .single();
+      if (!mongoose.Types.ObjectId.isValid(listId)) {
+        return res.status(404).json({ message: 'List not found' });
+      }
 
-      if (listError || !list) {
-        console.error('List verification error:', listError);
+      // First verify the list exists and get context
+      const list = await WordList.findById(listId).lean();
+
+      if (!list) {
         return res.status(404).json({ message: 'List not found' });
       }
 
@@ -26,22 +24,25 @@ export const wordController = {
       const meaning = await openaiService.generateWordMeaning(value, list.context);
 
       // Add the word with generated meaning
-      const { data, error } = await supabase
-        .from('words')
-        .insert([{
-          list_id: listId,
-          value,
-          meaning
-        }])
-        .select()
-        .single();
+      const word = new Word({
+        list_id: listId,
+        value,
+        meaning
+      });
 
-      if (error) {
-        console.error('Add word error:', error);
-        return res.status(500).json({ message: 'Error adding word' });
-      }
+      const savedWord = await word.save();
 
-      res.status(201).json(data);
+      // Transform MongoDB document to API format
+      const responseData = {
+        id: savedWord._id.toString(),
+        list_id: savedWord.list_id.toString(),
+        value: savedWord.value,
+        meaning: savedWord.meaning,
+        created_at: savedWord.created_at.toISOString(),
+        updated_at: savedWord.updated_at.toISOString()
+      };
+
+      res.status(201).json(responseData);
     } catch (error) {
       console.error('Add word error:', error);
       res.status(500).json({ message: 'Error adding word' });
@@ -51,33 +52,33 @@ export const wordController = {
   async getWords(req: Request, res: Response) {
     try {
       const { listId } = req.params;
-      const userId = req.user!.id;
 
-      // First verify the list belongs to the user
-      const { data: list, error: listError } = await supabase
-        .from('word_lists')
-        .select('id')
-        .eq('id', listId)
-        .eq('user_id', userId)
-        .single();
-
-      if (listError || !list) {
-        console.error('List verification error:', listError);
+      if (!mongoose.Types.ObjectId.isValid(listId)) {
         return res.status(404).json({ message: 'List not found' });
       }
 
-      const { data, error } = await supabase
-        .from('words')
-        .select('*')
-        .eq('list_id', listId)
-        .order('created_at', { ascending: true });
+      // First verify the list exists
+      const list = await WordList.findById(listId);
 
-      if (error) {
-        console.error('Get words error:', error);
-        return res.status(500).json({ message: 'Error fetching words' });
+      if (!list) {
+        return res.status(404).json({ message: 'List not found' });
       }
 
-      res.json(data);
+      const words = await Word.find({ list_id: listId })
+        .sort({ created_at: 1 })
+        .lean();
+
+      // Transform MongoDB documents to API format
+      const responseData = words.map(word => ({
+        id: word._id.toString(),
+        list_id: word.list_id.toString(),
+        value: word.value,
+        meaning: word.meaning,
+        created_at: word.created_at.toISOString(),
+        updated_at: word.updated_at.toISOString()
+      }));
+
+      res.json(responseData);
     } catch (error) {
       console.error('Get words error:', error);
       res.status(500).json({ message: 'Error fetching words' });
@@ -87,30 +88,25 @@ export const wordController = {
   async deleteWord(req: Request, res: Response) {
     try {
       const { listId, wordId } = req.params;
-      const userId = req.user!.id;
 
-      // First verify the list belongs to the user
-      const { data: list, error: listError } = await supabase
-        .from('word_lists')
-        .select('id')
-        .eq('id', listId)
-        .eq('user_id', userId)
-        .single();
+      if (!mongoose.Types.ObjectId.isValid(listId) || !mongoose.Types.ObjectId.isValid(wordId)) {
+        return res.status(404).json({ message: 'Word or list not found' });
+      }
 
-      if (listError || !list) {
-        console.error('List verification error:', listError);
+      // First verify the list exists
+      const list = await WordList.findById(listId);
+
+      if (!list) {
         return res.status(404).json({ message: 'List not found' });
       }
 
-      const { error } = await supabase
-        .from('words')
-        .delete()
-        .eq('id', wordId)
-        .eq('list_id', listId);
+      const deletedWord = await Word.findOneAndDelete({
+        _id: wordId,
+        list_id: listId
+      });
 
-      if (error) {
-        console.error('Delete word error:', error);
-        return res.status(500).json({ message: 'Error deleting word' });
+      if (!deletedWord) {
+        return res.status(404).json({ message: 'Word not found' });
       }
 
       res.status(204).send();

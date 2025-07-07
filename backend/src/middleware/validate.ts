@@ -1,24 +1,30 @@
 import { body, param, query } from 'express-validator';
 import { validateRequest } from './validateRequest';
+import mongoose from 'mongoose';
+
+// Custom validator for MongoDB ObjectId
+const isValidObjectId = (value: string) => {
+  return mongoose.Types.ObjectId.isValid(value);
+};
 
 export const validate = {
   listId: [
     param('listId')
-      .isUUID()
+      .custom(isValidObjectId)
       .withMessage('Invalid list ID format'),
     validateRequest
   ],
 
   id: [
     param('id')
-      .isUUID()
+      .custom(isValidObjectId)
       .withMessage('Invalid list ID format'),
     validateRequest
   ],
 
   wordId: [
     param('wordId')
-      .isUUID()
+      .custom(isValidObjectId)
       .withMessage('Invalid word ID format'),
     validateRequest
   ],

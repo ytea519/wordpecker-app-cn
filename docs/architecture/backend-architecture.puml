@@ -16,11 +16,12 @@ package "Backend Services" {
         [Middleware] as middleware
         [Controllers] as controllers
         [Rate Limiter] as ratelimit
+        [Validation] as validation
     }
 
-    package "Supabase" {
-        [Auth Service] as auth
-        database "PostgreSQL DB" as db
+    package "Database Layer" {
+        [Mongoose ODM] as mongoose
+        database "MongoDB" as db
     }
     
     [OpenAI Service] as llm
@@ -28,18 +29,36 @@ package "Backend Services" {
 
 cloud "External Services" {
     [OpenAI API] as openai
-    [Google OAuth] as google
 }
 
-[React.js App] --> api : OpenAI requests
-[React.js App] --> auth : Direct auth
-[React.js App] --> db : Direct database access
+package "Docker Environment" {
+    [MongoDB Container] as mongo_container
+    [Backend Container] as backend_container
+    [Frontend Container] as frontend_container
+}
+
+[React.js App] --> api : HTTP requests
 api --> middleware : Request processing
-middleware --> controllers : Business logic
+middleware --> validation : Input validation
+validation --> controllers : Business logic
+controllers --> mongoose : Data operations
+mongoose --> db : Database queries
 controllers --> llm : Exercise generation
 llm --> openai : API calls
-auth --> google : OAuth flow
-ratelimit --> api : Protect endpoints
-middleware --> auth : Auth verification
+ratelimit --> api : Protect OpenAI endpoints
+
+mongo_container --> db : Hosts MongoDB
+backend_container --> api : Hosts Express server
+frontend_container --> [React.js App] : Hosts React app
+
+note right of validation
+  Uses ObjectId validation
+  instead of UUID
+end note
+
+note top of db
+  Single user approach
+  No authentication required
+end note
 
 @enduml

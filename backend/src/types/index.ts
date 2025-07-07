@@ -1,18 +1,5 @@
-import { Request } from 'express';
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-      };
-    }
-  }
-}
-
 export interface WordList {
   id: string;
-  user_id: string;
   name: string;
   description?: string;
   context?: string;
@@ -27,10 +14,6 @@ export interface Word {
   meaning: string;
   created_at: string;
   updated_at: string;
-}
-
-export interface User {
-  id: string;
 }
 
 export interface Exercise {

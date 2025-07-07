@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import { environment } from './config/environment';
 import { errorHandler } from './middleware/errorHandler';
 import { openaiRateLimiter } from './middleware/rateLimiter';
-import { authMiddleware } from './middleware/auth';
+import { connectDB } from './config/mongodb';
 
 // Import routes
 import listRoutes from './routes/listRoutes';
@@ -18,9 +18,6 @@ const app = express();
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-
-// Auth middleware
-app.use(authMiddleware);
 
 // Apply rate limiter only to OpenAI-powered routes
 app.use('/api/learn', openaiRateLimiter);
@@ -38,8 +35,12 @@ app.use(errorHandler);
 // Only start server if not in test environment
 if (process.env.NODE_ENV !== 'test') {
   const PORT = environment.port;
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT} in ${environment.nodeEnv} mode`);
+  
+  // Connect to MongoDB and start server
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT} in ${environment.nodeEnv} mode`);
+    });
   });
 }
 

@@ -1,81 +1,97 @@
 @startuml
 
 skinparam classAttributeIconSize 0
-skinparam style strictuml
+skinparam monochrome false
 
-class User {
-  + id: String
-  + email: String
-  + name: String
-  + wordLists: List<WordList>
-  + createList(name: String, description: String, context: String): WordList
-  + deleteList(listId: String): void
-}
+title WordPecker Application Structure
 
 class WordList {
-  + id: String
-  + name: String
-  + description: String
-  + context: String
-  + words: List<Word>
-  + addWord(word: String): Word
-  + removeWord(wordId: String): void
-  + startLearnMode(): LearnSession
-  + startQuizMode(): QuizSession
+  _id : ObjectId
+  name : String
+  description : String
+  context : String
+  created_at : Date
+  updated_at : Date
+  ----
+  addWord(word: String) : Word
+  removeWord(wordId: ObjectId) : void
+  startLearnMode() : Session
+  startQuizMode() : Session
 }
 
 class Word {
-  + id: String
-  + value: String
-  + meaning: String
-  + createdAt: DateTime
-  + fetchMeaning(): void
+  _id : ObjectId
+  list_id : ObjectId
+  value : String
+  meaning : String
+  created_at : Date
+  updated_at : Date
+  ----
+  fetchMeaning() : void
 }
 
-class LearnSession {
-  + id: String
-  + wordList: WordList
-  + exercises: List<Exercise>
-  + currentExerciseIndex: int
-  + generateNewExercises(): void
-  + nextExercise(): Exercise
-  + submitAnswer(answer: String): boolean
-}
-
-class QuizSession {
-  + id: String
-  + wordList: WordList
-  + exercises: List<Exercise>
-  + currentExerciseIndex: int
-  + score: int
-  + generateNewExercises(): void
-  + nextExercise(): Exercise
-  + submitAnswer(answer: String): boolean
-  + calculateScore(): int
+class Session {
+  _id : ObjectId
+  list_id : ObjectId
+  type : String
+  score : Number
+  current_exercise_index : Number
+  created_at : Date
+  completed_at : Date
+  ----
+  generateNewExercises() : void
+  nextExercise() : Exercise
+  submitAnswer(answer: String) : boolean
+  calculateScore() : Number
 }
 
 class Exercise {
-  + id: String
-  + type: String
-  + question: String
-  + correctAnswer: String
-  + options: List<String>
-  + isCorrect(answer: String): boolean
+  word_id : String
+  type : String
+  question : String
+  correctAnswer : String
+  options : List<String>
+  ----
+  isCorrect(answer: String) : boolean
+}
+
+abstract class MongooseModel {
+  ----
+  save() : Promise
+  findById(id: ObjectId) : Promise
+  find(query: Object) : Promise
+  findByIdAndUpdate(id: ObjectId, update: Object) : Promise
+  findByIdAndDelete(id: ObjectId) : Promise
 }
 
 class LLMService {
-  + generateMeaning(word: String, context: String): String
-  + generateExercises(words: List<Word>, type: String, count: int): List<Exercise>
+  ----
+  generateMeaning(word: String, context: String) : String
+  generateExercises(words: List<Word>, type: String, count: Number) : List<Exercise>
 }
 
-User "1" *-- "*" WordList : owns >
-WordList "1" *-- "*" Word : contains >
-WordList "1" -- "1" LearnSession : creates >
-WordList "1" -- "1" QuizSession : creates >
-LearnSession "1" *-- "*" Exercise : has >
-QuizSession "1" *-- "*" Exercise : has >
-Word -- LLMService : uses >
-LearnSession -- LLMService : uses >
-QuizSession -- LLMService : uses >
+WordList ||--o{ Word : contains
+WordList ||--o{ Session : creates
+Session ||--o{ Exercise : generates
+Word ..> LLMService : uses
+Session ..> LLMService : uses
+WordList --|> MongooseModel
+Word --|> MongooseModel
+Session --|> MongooseModel
+
+note top of WordList
+  Single User Application
+  No Authentication Required
+end note
+
+note right of Session
+  type can be 'learn' or 'quiz'
+  Same model handles both types
+end note
+
+note right of MongooseModel
+  All models use MongoDB ObjectId
+  Automatic timestamps with Mongoose
+end note
 
 @enduml

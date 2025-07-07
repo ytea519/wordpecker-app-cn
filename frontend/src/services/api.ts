@@ -8,24 +8,11 @@ const api = axios.create({
   },
 });
 
-// Add auth token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
-
 // Add response interceptor to handle errors and unwrap data
 api.interceptors.response.use(
   (response) => response.data,
   (error) => {
-    if (error.response?.status === 401) {
-      // Handle unauthorized access
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
+    console.error('API Error:', error);
     return Promise.reject(error);
   }
 );
@@ -52,7 +39,7 @@ interface QuizQuestionsResponse {
   completed: boolean;
 }
 
-// need to manually create the tables in supabase...
+// API service for WordPecker app
 export const apiService = {
   // Lists
   getLists: (): ApiResponse<WordList[]> => api.get('/api/lists'),

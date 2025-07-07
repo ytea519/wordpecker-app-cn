@@ -1,29 +1,31 @@
 import { Request, Response } from 'express';
-import { supabase } from '../config/supabase';
+import { WordList, Word } from '../models';
+import mongoose from 'mongoose';
 
 export const listController = {
   async createList(req: Request, res: Response) {
     try {
       const { name, description, context } = req.body;
-      const userId = req.user!.id;
 
-      const { data, error } = await supabase
-        .from('word_lists')
-        .insert([{
-          user_id: userId,
-          name,
-          description,
-          context
-        }])
-        .select()
-        .single();
+      const wordList = new WordList({
+        name,
+        description,
+        context
+      });
 
-      if (error) {
-        console.error('Create list error:', error);
-        return res.status(500).json({ message: 'Error creating list' });
-      }
+      const savedList = await wordList.save();
+      
+      // Convert to plain object and transform _id to id
+      const responseData = {
+        id: savedList._id.toString(),
+        name: savedList.name,
+        description: savedList.description,
+        context: savedList.context,
+        created_at: savedList.created_at.toISOString(),
+        updated_at: savedList.updated_at.toISOString()
+      };
 
-      res.status(201).json(data);
+      res.status(201).json(responseData);
     } catch (error) {
       console.error('Create list error:', error);
       res.status(500).json({ message: 'Error creating list' });
@@ -32,20 +34,21 @@ export const listController = {
 
   async getLists(req: Request, res: Response) {
     try {
-      const userId = req.user!.id;
+      const lists = await WordList.find()
+        .sort({ created_at: -1 })
+        .lean();
 
-      const { data, error } = await supabase
-        .from('word_lists')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false });
+      // Transform MongoDB documents to API format
+      const responseData = lists.map(list => ({
+        id: list._id.toString(),
+        name: list.name,
+        description: list.description,
+        context: list.context,
+        created_at: list.created_at.toISOString(),
+        updated_at: list.updated_at.toISOString()
+      }));
 
-      if (error) {
-        console.error('Get lists error:', error);
-        return res.status(500).json({ message: 'Error fetching lists' });
-      }
-
-      res.json(data);
+      res.json(responseData);
     } catch (error) {
       console.error('Get lists error:', error);
       res.status(500).json({ message: 'Error fetching lists' });
@@ -55,28 +58,28 @@ export const listController = {
   async getList(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const userId = req.user!.id;
 
-      const { data, error } = await supabase
-        .from('word_lists')
-        .select('*')
-        .eq('id', id)
-        .eq('user_id', userId)
-        .single();
-
-      if (error) {
-        console.error('Get list error:', error);
-        if (error.code === 'PGRST116') {
-          return res.status(404).json({ message: 'List not found' });
-        }
-        return res.status(500).json({ message: 'Error fetching list' });
-      }
-
-      if (!data) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ message: 'List not found' });
       }
 
-      res.json(data);
+      const list = await WordList.findById(id).lean();
+
+      if (!list) {
+        return res.status(404).json({ message: 'List not found' });
+      }
+
+      // Transform MongoDB document to API format
+      const responseData = {
+        id: list._id.toString(),
+        name: list.name,
+        description: list.description,
+        context: list.context,
+        created_at: list.created_at.toISOString(),
+        updated_at: list.updated_at.toISOString()
+      };
+
+      res.json(responseData);
     } catch (error) {
       console.error('Get list error:', error);
       res.status(500).json({ message: 'Error fetching list' });
@@ -87,29 +90,32 @@ export const listController = {
     try {
       const { id } = req.params;
       const { name, description, context } = req.body;
-      const userId = req.user!.id;
 
-      const { data, error } = await supabase
-        .from('word_lists')
-        .update({ name, description, context })
-        .eq('id', id)
-        .eq('user_id', userId)
-        .select()
-        .single();
-
-      if (error) {
-        console.error('Update list error:', error);
-        if (error.code === 'PGRST116') {
-          return res.status(404).json({ message: 'List not found' });
-        }
-        return res.status(500).json({ message: 'Error updating list' });
-      }
-
-      if (!data) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(404).json({ message: 'List not found' });
       }
 
-      res.json(data);
+      const updatedList = await WordList.findByIdAndUpdate(
+        id,
+        { name, description, context },
+        { new: true, lean: true }
+      );
+
+      if (!updatedList) {
+        return res.status(404).json({ message: 'List not found' });
+      }
+
+      // Transform MongoDB document to API format
+      const responseData = {
+        id: updatedList._id.toString(),
+        name: updatedList.name,
+        description: updatedList.description,
+        context: updatedList.context,
+        created_at: updatedList.created_at.toISOString(),
+        updated_at: updatedList.updated_at.toISOString()
+      };
+
+      res.json(responseData);
     } catch (error) {
       console.error('Update list error:', error);
       res.status(500).json({ message: 'Error updating list' });
@@ -119,26 +125,19 @@ export const listController = {
   async deleteList(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const userId = req.user!.id;
+
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(404).json({ message: 'List not found' });
+      }
 
       // First delete all words in the list
-      await supabase
-        .from('words')
-        .delete()
-        .eq('list_id', id);
+      await Word.deleteMany({ list_id: id });
 
-      const { error } = await supabase
-        .from('word_lists')
-        .delete()
-        .eq('id', id)
-        .eq('user_id', userId);
+      // Then delete the list
+      const deletedList = await WordList.findByIdAndDelete(id);
 
-      if (error) {
-        console.error('Delete list error:', error);
-        if (error.code === 'PGRST116') {
-          return res.status(404).json({ message: 'List not found' });
-        }
-        return res.status(500).json({ message: 'Error deleting list' });
+      if (!deletedList) {
+        return res.status(404).json({ message: 'List not found' });
       }
 
       res.status(204).send();
