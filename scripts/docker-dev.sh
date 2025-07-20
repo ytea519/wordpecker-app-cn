@@ -25,13 +25,13 @@ if ! grep -q "OPENAI_API_KEY=sk-" .env && ! grep -q "OPENAI_API_KEY=your_" .env;
 fi
 
 echo "🔧 Stopping any existing containers..."
-docker-compose -f docker-compose.dev.yml down
+docker-compose down
 
 echo "🧹 Cleaning up old images..."
-docker-compose -f docker-compose.dev.yml build --no-cache
+docker-compose build --no-cache
 
 echo "🔄 Starting services..."
-docker-compose -f docker-compose.dev.yml up
+docker-compose up
 
 echo "🎉 WordPecker App should be running at:"
 echo "   Frontend: http://localhost:5173"

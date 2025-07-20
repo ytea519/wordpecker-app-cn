@@ -56,14 +56,17 @@ app.use(errorHandler);
 if (process.env.NODE_ENV !== 'test') {
   const PORT = environment.port;
   
-  // Configure OpenAI agents
-  configureOpenAIAgents();
-  
-  // Connect to MongoDB and start server
-  connectDB().then(() => {
+  // Configure OpenAI agents and connect to MongoDB
+  Promise.all([
+    configureOpenAIAgents(),
+    connectDB()
+  ]).then(() => {
     app.listen(PORT, () => {
       console.log(`Server running on port ${PORT} in ${environment.nodeEnv} mode`);
     });
+  }).catch(error => {
+    console.error('Failed to initialize application:', error);
+    process.exit(1);
   });
 }
 

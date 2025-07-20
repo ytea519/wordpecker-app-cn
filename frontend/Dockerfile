@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
@@ -6,20 +6,11 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci --only=production
-
-# Copy source code
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Install serve to serve the built app
-RUN npm install -g serve
+# Install all dependencies (including dev dependencies)
+RUN npm ci
 
 # Expose port
-EXPOSE 3000
+EXPOSE 5173
 
-# Serve the built application
-CMD ["serve", "-s", "dist", "-l", "3000"]
+# Start the development server
+CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]

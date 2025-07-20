@@ -1,7 +1,6 @@
 import 'dotenv/config';
-import { setDefaultOpenAIKey } from '@openai/agents';
 
-export function configureOpenAIAgents(): void {
+export async function configureOpenAIAgents(): Promise<void> {
   const apiKey = process.env.OPENAI_API_KEY;
 
   if (!apiKey) {
@@ -9,5 +8,11 @@ export function configureOpenAIAgents(): void {
     process.exit(1);
   }
 
-  setDefaultOpenAIKey(apiKey);
+  try {
+    const { setDefaultOpenAIKey } = await import('@openai/agents');
+    setDefaultOpenAIKey(apiKey);
+  } catch (error) {
+    console.error('Error loading @openai/agents:', error);
+    process.exit(1);
+  }
 }

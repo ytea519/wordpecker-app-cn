@@ -356,7 +356,7 @@ npm run dev
 
 ## Docker Setup (Recommended)
 
-For the easiest setup experience, use Docker to run the entire application with MongoDB:
+For the easiest setup experience, use Docker to run the entire application with MongoDB and hot reload for development:
 
 ### Prerequisites
 - Docker and Docker Compose installed on your system
@@ -382,29 +382,23 @@ ELEVENLABS_API_KEY=your_actual_elevenlabs_api_key_here  # Optional for audio fea
 
 3. **Start all services (MongoDB + Backend + Frontend):**
 ```bash
-# For development with hot reload
-docker-compose -f docker-compose.dev.yml up --build
-
-# Or for production build
+# Start development environment with hot reload
 docker-compose up --build
 ```
 
 4. **Access the application:**
-   - Frontend: http://localhost:5173 (dev) or http://localhost:3000 (prod)
-   - Backend API: http://localhost:3000
+   - Frontend: http://localhost:5173 (Vite dev server with hot reload)
+   - Backend API: http://localhost:3000 (with hot reload)
    - MongoDB: localhost:27017 (username: admin, password: password)
 
 ### Docker Commands
 
 ```bash
-# Start services in development mode with hot reload
-docker-compose -f docker-compose.dev.yml up --build
-
-# Start services in production mode
+# Start development environment with hot reload
 docker-compose up --build
 
 # Run in background
-docker-compose -f docker-compose.dev.yml up -d
+docker-compose up -d
 
 # Stop all services
 docker-compose down
@@ -415,8 +409,12 @@ docker-compose down -v
 # View logs
 docker-compose logs -f
 
+# View logs for specific service
+docker-compose logs -f backend
+docker-compose logs -f frontend
+
 # Rebuild specific service
-docker-compose build backend
+docker-compose build backend --no-cache
 ```
 
 ### MongoDB Access
@@ -473,9 +471,8 @@ This script will:
 - The backend has retry logic and will attempt to connect 5 times
 
 **Port conflicts:**
-- Development setup uses ports 5173 (frontend), 3000 (backend), 27017 (mongodb)
-- Production setup uses ports 3000 (frontend), 3001 (backend), 27017 (mongodb)
-- Change ports in docker-compose files if needed
+- Docker setup uses ports 5173 (frontend), 3000 (backend), 27017 (mongodb)
+- Change ports in docker-compose.yml if needed
 
 **Container build issues:**
 - Rebuild without cache: `docker-compose build --no-cache`
@@ -494,7 +491,7 @@ This script will:
 - **LLM**: OpenAI API (GPT-4, DALL-E, Realtime Voice API) | @openai/agents SDK
 - **Audio**: ElevenLabs API for pronunciation, audio caching system
 - **Images**: LLM-generated (DALL-E) and stock photos (Pexels integration)
-- **Deployment**: Docker support for development and production
+- **Deployment**: Docker support for development with hot reload
 - **Single User**: No authentication required - localStorage-based user identification
 
 ## Contributing
