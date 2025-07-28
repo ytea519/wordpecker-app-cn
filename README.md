@@ -507,3 +507,7 @@ Contributions are welcome!
 ## License
 
 [MIT](LICENSE)
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=baturyilmaz/wordpecker-app&type=Date)](https://www.star-history.com/#baturyilmaz/wordpecker-app&Date)
