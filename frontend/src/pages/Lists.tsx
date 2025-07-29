@@ -58,8 +58,8 @@ export const Lists = () => {
       } catch (error) {
         console.error('Error fetching lists:', error);
         toast({
-          title: 'Error fetching lists',
-          description: 'Please try again later',
+          title: '获取列表失败',
+          description: '请稍后再试',
           status: 'error',
           duration: 5000,
           isClosable: true,
@@ -78,7 +78,7 @@ export const Lists = () => {
       setLists(prevLists => [newList, ...prevLists]);
       // Word count and progress are now included in the API response
       toast({
-        title: 'List created successfully',
+        title: '列表创建成功',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -87,8 +87,8 @@ export const Lists = () => {
     } catch (error) {
       console.error('Error creating list:', error);
       toast({
-        title: 'Error creating list',
-        description: 'Please try again later',
+        title: '创建列表失败',
+        description: '请稍后再试',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -139,10 +139,10 @@ export const Lists = () => {
                   mt={-4}
                 />
               </Flex>
-              My Word Trees
+              我的单词树
             </Heading>
             <Text mt={2} color="gray.400" fontSize="lg">
-              Plant and grow your vocabulary with WordPecker! 🌱
+              在 WordPecker 中种下并培育你的词汇树！🌱
             </Text>
           </Box>
           <Button
@@ -157,7 +157,7 @@ export const Lists = () => {
             transition="all 0.2s"
             w={{ base: 'full', md: 'auto' }}
           >
-            Plant New Tree
+            种下新的词汇树
           </Button>
         </Flex>
 
@@ -219,7 +219,7 @@ export const Lists = () => {
                               fontSize="xs"
                               noOfLines={1}
                             >
-                              My Word Tree
+                              我的词汇树
                             </Text>
                           </VStack>
                         </Flex>
@@ -236,7 +236,7 @@ export const Lists = () => {
                             w="full"
                             textAlign="center"
                           >
-                            {wordCount} words
+                            {wordCount} 个词汇
                           </Badge>
                           {wordCount > 0 && list.masteredWords && list.masteredWords > 0 && (
                             <Badge 
@@ -299,7 +299,7 @@ export const Lists = () => {
                           isDisabled={wordCount === 0}
                           size="md"
                         >
-                          Learn
+                          学习
                         </Button>
                       </Link>
                       <Link to={`/quiz/${list.id}`} style={{ flex: 1 }}>
@@ -316,7 +316,7 @@ export const Lists = () => {
                           isDisabled={wordCount === 0}
                           size="md"
                         >
-                          Quiz
+                          测验
                         </Button>
                       </Link>
                       <Link to={`/lists/${list.id}`} style={{ flex: 1 }}>
@@ -332,7 +332,7 @@ export const Lists = () => {
                           transition="all 0.2s"
                           size="md"
                         >
-                          View
+                          查看
                         </Button>
                         </Link>
                       </Flex>

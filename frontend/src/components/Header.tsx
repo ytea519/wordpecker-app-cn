@@ -20,7 +20,7 @@ export const Header = () => {
                 transition="all 0.2s"
               >
                 <Flex align="center" gap={1}>
-                  <Text>My Trees</Text>
+                  <Text>我的单词树</Text>
                   <Icon 
                     as={FaFeatherAlt} 
                     color="#FA8C16" 
@@ -42,7 +42,7 @@ export const Header = () => {
                 }}
                 transition="all 0.2s"
               >
-                Templates
+                模板库
               </Button>
             </Link>
             <Link to="/describe">
@@ -55,7 +55,7 @@ export const Header = () => {
                 }}
                 transition="all 0.2s"
               >
-                Vision Garden
+                视觉花园
               </Button>
             </Link>
             <Link to="/learn-new-words">
@@ -68,7 +68,7 @@ export const Header = () => {
                 }}
                 transition="all 0.2s"
               >
-                Get New Words
+                获取新词
               </Button>
             </Link>
             <Link to="/settings">
@@ -81,13 +81,13 @@ export const Header = () => {
                 }}
                 transition="all 0.2s"
               >
-                Settings
+                设置
               </Button>
             </Link>
           </Flex>
           <Box>
             <Text color="green.500" fontWeight="bold">
-              WordPecker App
+              WordPecker 应用
             </Text>
           </Box>
         </Flex>

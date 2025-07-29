@@ -121,7 +121,7 @@ export const ListDetail = () => {
       const newWord = await apiService.addWord(id!, word);
       setWords(prevWords => [newWord, ...prevWords]);
       toast({
-        title: 'Word added successfully',
+        title: '单词添加成功',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -130,8 +130,8 @@ export const ListDetail = () => {
     } catch (error) {
       console.error('Error adding word:', error);
       toast({
-        title: 'Error adding word',
-        description: 'Please try again later',
+        title: '添加单词失败',
+        description: '请稍后再试',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -144,7 +144,7 @@ export const ListDetail = () => {
       await apiService.deleteWord(id!, wordId);
       setWords(prevWords => prevWords.filter(word => word.id !== wordId));
       toast({
-        title: 'Word deleted successfully',
+        title: '单词删除成功',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -152,8 +152,8 @@ export const ListDetail = () => {
     } catch (error) {
       console.error('Error deleting word:', error);
       toast({
-        title: 'Error deleting word',
-        description: 'Please try again later',
+        title: '删除单词失败',
+        description: '请稍后再试',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -162,12 +162,12 @@ export const ListDetail = () => {
   };
 
   const handleDeleteList = async () => {
-    if (!id || !window.confirm('Are you sure you want to delete this list? This action cannot be undone.')) return;
+    if (!id || !window.confirm('确定要删除该列表吗？此操作无法撤销。')) return;
     
     try {
       await apiService.deleteList(id);
       toast({
-        title: 'List deleted successfully',
+        title: '列表删除成功',
         status: 'success',
         duration: 3000,
         isClosable: true,
@@ -176,8 +176,8 @@ export const ListDetail = () => {
     } catch (error) {
       console.error('Error deleting list:', error);
       toast({
-        title: 'Error deleting list',
-        description: 'Please try again later',
+        title: '删除列表失败',
+        description: '请稍后再试',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -205,8 +205,8 @@ export const ListDetail = () => {
     } catch (error) {
       console.error('Error generating light reading:', error);
       toast({
-        title: 'Error generating reading',
-        description: 'Please try again later',
+        title: '生成阅读失败',
+        description: '请稍后再试',
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -228,13 +228,13 @@ export const ListDetail = () => {
     return (
       <Container maxW="container.xl" py={8} px={{ base: 4, md: 8 }}>
         <Box textAlign="center" py={10}>
-          <Text>List not found</Text>
+          <Text>未找到该词汇列表</Text>
           <Button 
             onClick={() => navigate('/lists')} 
             mt={4}
             colorScheme="green"
           >
-            Back to Lists
+            返回列表
           </Button>
         </Box>
       </Container>
@@ -331,7 +331,7 @@ export const ListDetail = () => {
               isDisabled={words.length === 0}
               onClick={() => navigate(`/learn/${list!.id}`, { state: { list } })}
             >
-              Learn
+              学习
             </Button>
             <Button 
               variant="ghost"
@@ -345,7 +345,7 @@ export const ListDetail = () => {
               isDisabled={words.length === 0}
               onClick={() => navigate(`/quiz/${list!.id}`, { state: { list } })}
             >
-              Quiz
+              测验
             </Button>
             <Button 
               variant="ghost"
@@ -359,7 +359,7 @@ export const ListDetail = () => {
               isDisabled={words.length === 0}
               onClick={onReadingModalOpen}
             >
-              Light Reading
+              简易阅读
             </Button>
             <Button 
               variant="ghost"
@@ -386,7 +386,7 @@ export const ListDetail = () => {
                 } 
               })}
             >
-              Voice Chat
+              语音聊天
             </Button>
             <Button 
               variant="solid"
@@ -399,7 +399,7 @@ export const ListDetail = () => {
               size="lg"
               onClick={onOpen}
             >
-              Add Word
+              添加单词
             </Button>
           </Flex>
         </Flex>
@@ -428,7 +428,7 @@ export const ListDetail = () => {
                 style={{ animation: 'sparkle 3s ease infinite' }}
               />
               <Text color="gray.400" fontSize="lg" textAlign="center">
-                Your tree is empty! Add some words to help it grow. 🌱
+                这棵词汇树还是空的，添加单词让它成长吧 🌱
               </Text>
               <Button
                 variant="outline"
@@ -441,7 +441,7 @@ export const ListDetail = () => {
                 }}
                 transition="all 0.2s"
               >
-                Add Your First Word
+                添加你的第一个单词
               </Button>
             </Flex>
           ) : (
@@ -549,19 +549,19 @@ export const ListDetail = () => {
             <ModalHeader>
               <Flex align="center" gap={2}>
                 <FaBookOpen color="purple" />
-                <Text color="purple.400">Generate Light Reading</Text>
+                <Text color="purple.400">生成简易阅读</Text>
               </Flex>
             </ModalHeader>
             <ModalCloseButton />
             <ModalBody>
               <VStack spacing={4} align="stretch">
                 <Text fontSize="sm" color="gray.400">
-                  Create a personalized reading passage using the words from "{list?.name}". 
-                  Choose your preferred difficulty level:
+                  使用 "{list?.name}" 中的词汇生成个性化阅读材料。
+                  请选择难度等级：
                 </Text>
                 
                 <FormControl>
-                  <FormLabel color="purple.300">Reading Level</FormLabel>
+                  <FormLabel color="purple.300">阅读难度</FormLabel>
                   <Select 
                     value={lightReadingLevel} 
                     onChange={(e) => setLightReadingLevel(e.target.value as 'beginner' | 'intermediate' | 'advanced')}
@@ -569,33 +569,33 @@ export const ListDetail = () => {
                     borderColor="slate.600"
                     _focus={{ borderColor: 'purple.400' }}
                   >
-                    <option value="beginner">Beginner - Simple sentences and basic vocabulary</option>
-                    <option value="intermediate">Intermediate - Natural flow with moderate complexity</option>
-                    <option value="advanced">Advanced - Complex sentences and sophisticated language</option>
+                    <option value="beginner">初级 - 简单句子和基础词汇</option>
+                    <option value="intermediate">中级 - 语句自然、难度适中</option>
+                    <option value="advanced">高级 - 复杂句子和高级用语</option>
                   </Select>
                 </FormControl>
 
                 <Box p={3} bg="purple.50" borderRadius="md" borderLeft="4px solid" borderColor="purple.400">
                   <Text fontSize="sm" color="purple.700">
-                    💡 The reading will include {Math.min(12, words.length)} randomly selected words from your list 
-                    {words.length > 12 && ` (out of ${words.length} total)`} in a contextual story or article
-                    {list?.context && ` related to "${list.context}"`}.
+                    💡 阅读材料将包含 {Math.min(12, words.length)} 个随机选择的单词
+                    {words.length > 12 && `（共 ${words.length} 个）`}，并结合相关情境文章
+                    {list?.context && `（主题：${list.context}）`}。
                   </Text>
                 </Box>
               </VStack>
             </ModalBody>
             <ModalFooter>
               <Button variant="ghost" mr={3} onClick={onReadingModalClose}>
-                Cancel
+                取消
               </Button>
               <Button
                 colorScheme="purple"
                 onClick={handleGenerateLightReading}
                 isLoading={generatingReading}
-                loadingText="Creating Reading..."
+                loadingText="正在生成阅读材料..."
                 leftIcon={<FaBookOpen />}
               >
-                Generate Reading
+                生成阅读
               </Button>
             </ModalFooter>
           </ModalContent>

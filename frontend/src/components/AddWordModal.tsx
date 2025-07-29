@@ -39,7 +39,7 @@ export const AddWordModal = ({ isOpen, onClose, onAddWord }: AddWordModalProps) 
   const handleSubmit = async () => {
     if (!word.trim()) {
       toast({
-        title: 'Word is required',
+        title: '必须输入单词',
         status: 'error',
         duration: 2000,
         isClosable: true,
@@ -51,8 +51,8 @@ export const AddWordModal = ({ isOpen, onClose, onAddWord }: AddWordModalProps) 
     try {
       await onAddWord(word.trim());
       toast({
-        title: '🪵 Word found!',
-        description: 'Finding the perfect meaning for your word...',
+        title: '🪵 找到单词！',
+        description: '正在为你查找最佳释义...',
         status: 'success',
         duration: 2000,
         isClosable: true,
@@ -61,8 +61,8 @@ export const AddWordModal = ({ isOpen, onClose, onAddWord }: AddWordModalProps) 
       onClose();
     } catch (error) {
       toast({
-        title: 'Failed to add word',
-        description: error instanceof Error ? error.message : 'Unknown error occurred',
+        title: '添加单词失败',
+        description: error instanceof Error ? error.message : '发生未知错误',
         status: 'error',
         duration: 2000,
         isClosable: true,
@@ -101,7 +101,7 @@ export const AddWordModal = ({ isOpen, onClose, onAddWord }: AddWordModalProps) 
                 bgClip="text"
                 fontSize="2xl"
               >
-                Find a New Word 🪵
+                发现新单词 🪵
               </Text>
             </Flex>
           </ModalHeader>
@@ -109,9 +109,9 @@ export const AddWordModal = ({ isOpen, onClose, onAddWord }: AddWordModalProps) 
           <ModalBody>
             <VStack spacing={4}>
               <FormControl isRequired>
-                <FormLabel color="gray.300">Word to Find</FormLabel>
+                <FormLabel color="gray.300">要查找的单词</FormLabel>
                 <Input
-                  placeholder="Type a word to add to your tree..."
+                  placeholder="输入要添加到词汇树的单词..."
                   value={word}
                   onChange={(e) => setWord(e.target.value)}
                   onKeyPress={handleKeyPress}
@@ -129,14 +129,14 @@ export const AddWordModal = ({ isOpen, onClose, onAddWord }: AddWordModalProps) 
 
           <ModalFooter gap={2}>
             <Button variant="ghost" onClick={onClose} color="gray.300">
-              Cancel
+              取消
             </Button>
             <Button
               variant="solid"
               colorScheme="orange"
               onClick={handleSubmit}
               isLoading={isLoading}
-              loadingText="Finding word 🪵"
+              loadingText="正在查找单词 🪵"
               leftIcon={<Icon as={FaSearch} boxSize={5} />}
               _hover={{
                 transform: 'translateY(-2px)',
@@ -144,7 +144,7 @@ export const AddWordModal = ({ isOpen, onClose, onAddWord }: AddWordModalProps) 
               }}
               transition="all 0.2s"
             >
-              Find Word
+              查找单词
             </Button>
           </ModalFooter>
         </MotionBox>
