@@ -101,7 +101,7 @@ export const CreateListModal = ({ isOpen, onClose, onCreateList }: CreateListMod
                 bgClip="text"
                 fontSize="2xl"
               >
-                Plant New Word Tree ✨
+                种下新的词汇树 ✨
               </Text>
             </Flex>
           </ModalHeader>
@@ -109,9 +109,9 @@ export const CreateListModal = ({ isOpen, onClose, onCreateList }: CreateListMod
           <ModalBody>
             <VStack spacing={4}>
               <FormControl isRequired>
-                <FormLabel color="gray.300">Tree Name</FormLabel>
+                <FormLabel color="gray.300">词汇树名称</FormLabel>
                 <Input
-                  placeholder="Name your word tree..."
+                  placeholder="给你的词汇树起个名字..."
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   onKeyPress={handleKeyPress}
@@ -125,9 +125,9 @@ export const CreateListModal = ({ isOpen, onClose, onCreateList }: CreateListMod
                 />
               </FormControl>
               <FormControl>
-                <FormLabel color="gray.300">Description</FormLabel>
+                <FormLabel color="gray.300">描述</FormLabel>
                 <Textarea
-                  placeholder="What kind of words will grow on this tree?"
+                  placeholder="这棵词汇树将包含哪些单词？"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   bg="slate.700"
@@ -141,9 +141,9 @@ export const CreateListModal = ({ isOpen, onClose, onCreateList }: CreateListMod
               <FormControl>
                 <FormLabel color="gray.300">
                   <Flex align="center" gap={2}>
-                    <Text>Tree Roots</Text>
+                    <Text>词汇树根基</Text>
                     <Tooltip 
-                      label="What's the foundation of this word tree? (e.g., Medical Terms, Computer Science, Literature)"
+                      label="这棵词汇树的基础是什么？（例如：医学术语、计算机科学、文学等）"
                       placement="top"
                       hasArrow
                     >
@@ -152,7 +152,7 @@ export const CreateListModal = ({ isOpen, onClose, onCreateList }: CreateListMod
                   </Flex>
                 </FormLabel>
                 <Textarea
-                  placeholder="e.g., Medical Terms, Computer Science, Harry Potter Series..."
+                  placeholder="例如：医学术语、计算机科学、哈利波特系列..."
                   value={context}
                   onChange={(e) => setContext(e.target.value)}
                   bg="slate.700"
@@ -168,14 +168,14 @@ export const CreateListModal = ({ isOpen, onClose, onCreateList }: CreateListMod
 
           <ModalFooter gap={2}>
             <Button variant="ghost" onClick={onClose} color="gray.300">
-              Cancel
+              取消
             </Button>
             <Button
               variant="solid"
               colorScheme="green"
               onClick={handleSubmit}
               isLoading={isLoading}
-              loadingText="Planting tree ✨"
+              loadingText="正在种树 ✨"
               leftIcon={<Icon as={GiTreeRoots} boxSize={5} />}
               _hover={{
                 transform: 'translateY(-2px)',
@@ -183,7 +183,7 @@ export const CreateListModal = ({ isOpen, onClose, onCreateList }: CreateListMod
               }}
               transition="all 0.2s"
             >
-              Plant Tree
+              种下词汇树
             </Button>
           </ModalFooter>
         </MotionBox>
